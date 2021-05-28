@@ -49,9 +49,6 @@ namespace bezdna_proto.Titanfall2.FileTypes
                 return;
             }
 
-            //foreach (var st in rpak.StringTables)
-            //    if (st.ID == d.id)
-            //        Name = st.GetString(d.offset);
             var backup = rpak.reader.BaseStream.Position;
             rpak.reader.BaseStream.Seek(rpak.DataChunkSeeks[d.id] + d.offset, System.IO.SeekOrigin.Begin);
             Name = rpak.reader.ReadNTString();

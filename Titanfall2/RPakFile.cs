@@ -28,16 +28,12 @@ namespace bezdna_proto.Titanfall2
 
         public U48[] Unk48;
 
+        // Not inclusive...
         public long MinDataChunkID { get; private set; }
 
         public RPakFile(FileStream file)
         {
             Header = new RPakHeader(file);
-
-            /*if(header.PartRPak != 0)
-            {
-                throw new NotImplementedException("Fucking partial RPaks");
-            }*/
 
             if(Header.Compressed)
             {
@@ -125,12 +121,9 @@ namespace bezdna_proto.Titanfall2
             ParseParsedData();
         }
 
-        //public Beauty.StringTable[] StringTables { get; private set; }
         public long[] DataChunkSeeks { get; private set; }
         private void ParseParsedData() // шиз бляь
         {
-            //var stringTables = new List<Beauty.StringTable>();
-
             var minPos = reader.BaseStream.Position;
 
             var kekPos = reader.BaseStream.Length;
@@ -149,31 +142,18 @@ namespace bezdna_proto.Titanfall2
 
                 dataChunkSeeks[i] = kekPos;
 
-                if (minPos >= kekPos)
+                if (minPos == kekPos)
                 {
                     MinDataChunkID = i - 1;
                     break;
                 }
-
-                /*if(data.DataType == DataChunk.EDataType.StringTable)
+                else if (minPos > kekPos)
                 {
-                    if (sawStringTable)
-                        throw new Exception("More than 1 string table, wtf?");
-                    sawStringTable = true;
-
-                    StringTable = new Beauty.StringTable(reader.ReadBytes((int)data.Size));
-                } else*/
-
-                /*if (SectionDescriptors[data.SectionID].SectionType == SectionDescriptor.ESectionType.StringTable)
-                {
-                    stringTables.Add(new Beauty.StringTable(reader.ReadBytes((int)data.Size), i));
-                } else*/
-                //reader.BaseStream.Seek((int)data.Size, SeekOrigin.Current); // skip data.Size bytes
+                    MinDataChunkID = i; // I'm retarded
+                }
             }
 
             DataChunkSeeks = dataChunkSeeks;
-
-            //StringTables = stringTables.ToArray();
         }
     }
 }

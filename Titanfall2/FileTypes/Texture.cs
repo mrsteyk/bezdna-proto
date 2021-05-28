@@ -147,9 +147,6 @@ namespace bezdna_proto.Titanfall2.FileTypes
                 return;
             }
 
-            //foreach (var st in rpak.StringTables)
-            //    if (st.ID == d.id)
-            //        Name = st.GetString(d.offset);
             var backup = rpak.reader.BaseStream.Position;
             rpak.reader.BaseStream.Seek(rpak.DataChunkSeeks[d.id] + d.offset, System.IO.SeekOrigin.Begin);
             Name = rpak.reader.ReadNTString();
@@ -175,13 +172,11 @@ namespace bezdna_proto.Titanfall2.FileTypes
             RPakSize = rpak.DataChunks[data.id].Size - data.offset;
 
             StarpakNum = (int)file.StarpakOffset & 0xF;
-            //StarpakOffset -= StarpakNum; // Make 'em aligned...
 
             StartSeekStarpak = StarPakMipMaps == 0 ? 0 : file.StarpakOffset;
             Algorithm = _Compression[TextureType];
             if (Algorithm == "UNKNOWN")
                 Console.WriteLine($"!!! {TextureType} ISNT PROGRAMMED IN !!!");
-                //throw new NotImplementedException("TextureType is unknown!");
 
             // --- RETARDED MIPMAP WALKER ---
             var textureDatas = new TextureData[MipMaps];
