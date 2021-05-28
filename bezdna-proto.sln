@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bezdna-proto", "bezdna-proto.csproj", "{0FCDA28C-1394-49D5-84B1-F47417422EDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FCDA28C-1394-49D5-84B1-F47417422EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FCDA28C-1394-49D5-84B1-F47417422EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FCDA28C-1394-49D5-84B1-F47417422EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FCDA28C-1394-49D5-84B1-F47417422EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB6341D1-8DCD-417E-A348-C64B7666E64F}
+	EndGlobalSection
+EndGlobal
