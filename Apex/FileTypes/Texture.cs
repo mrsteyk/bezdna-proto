@@ -8,81 +8,6 @@ namespace bezdna_proto.Apex.FileTypes
 {
     class Texture
     {
-        /*public enum Compression
-        {
-            DXT1 = 0,
-            DXT1 = 1,
-            BC4U = 6,
-            BC5U = 8,
-        }*/
-        // Ебал я этих даунов из РСПН, сука, кто так делает блять ЪуЪ
-        private static readonly string[] _Compression = {
-            "DXT1", // 0
-            "DXT1", // 1
-            "UNKNOWN", // 2
-            "UNKNOWN", // 3
-            "UNKNOWN", // 4
-            "UNKNOWN", // 5
-            "BC4U", // 6
-            "UNKNOWN", // 7
-            "BC5U", // 8
-            "UNKNOWN", // 9
-            "BC6H", // 10
-            "UNKNOWN", // 11
-            "UNKNOWN", // 12
-            "BC7U", // 13
-            "UNKNOWN", // 14
-            "UNKNOWN", // 15
-            "UNKNOWN", // 16
-            "UNKNOWN", // 17
-            "UNKNOWN", // 18
-            "UNKNOWN", // 19
-            "UNKNOWN", // 20
-            "UNKNOWN", // 21
-            "UNKNOWN", // 22
-            "UNKNOWN", // 23
-            "UNKNOWN", // 24
-            "UNKNOWN", // 25
-            "UNKNOWN", // 26
-            "UNKNOWN", // 27
-            "UNKNOWN", // 28
-            "UNKNOWN", // 29
-            "UNKNOWN", // 30
-            "UNKNOWN", // 31
-            "UNKNOWN", // 32
-            "UNKNOWN", // 33
-            "UNKNOWN", // 34
-            "UNKNOWN", // 35
-            "UNKNOWN", // 36
-            "UNKNOWN", // 37
-            "UNKNOWN", // 38
-            "UNKNOWN", // 39
-            "UNKNOWN", // 40
-            "UNKNOWN", // 41
-            "UNKNOWN", // 42
-            "UNKNOWN", // 43
-            "UNKNOWN", // 44
-            "UNKNOWN", // 45
-            "UNKNOWN", // 46
-            "UNKNOWN", // 47
-            "UNKNOWN", // 48
-            "UNKNOWN", // 49
-            "UNKNOWN", // 50
-            "UNKNOWN", // 51
-            "UNKNOWN", // 52
-            "UNKNOWN", // 53
-            "UNKNOWN", // 54
-            "UNKNOWN", // 55
-            "UNKNOWN", // 56
-            "UNKNOWN", // 57
-            "UNKNOWN", // 58
-            "UNKNOWN", // 59
-            "UNKNOWN", // 60
-            "UNKNOWN", // 61
-            "UNKNOWN", // 62
-            "UNKNOWN", // 63
-        };
-
         public struct TextureData
         {
             public long seek;
@@ -93,7 +18,8 @@ namespace bezdna_proto.Apex.FileTypes
             public bool streaming;
             public bool optional;
         }
-        private static readonly ushort[] _textureTypeSteps = { 1032, 1032, 1040, 1040, 1040, 1040, 1032, 1032, 1040, 1040, 1040, 1040, 1040, 1040, 272, 272, 272, 268, 268, 268, 264, 264, 264, 264, 264, 264, 264, 264, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 258, 258, 258, 258, 258, 258, 258, 258, 258, 257, 257, 257, 257, 257, 260, 260, 260, 258, 0, 0 };
+        //private static readonly ushort[] _textureTypeSteps = { 1032, 1032, 1040, 1040, 1040, 1040, 1032, 1032, 1040, 1040, 1040, 1040, 1040, 1040, 272, 272, 272, 268, 268, 268, 264, 264, 264, 264, 264, 264, 264, 264, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 260, 258, 258, 258, 258, 258, 258, 258, 258, 258, 257, 257, 257, 257, 257, 260, 260, 260, 258, 0, 0 };
+        private static readonly byte[] _textureTypeShit = { 8, 4, 4, 8, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 8, 4, 4, 8, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 16, 4, 4, 16, 1, 1, 16, 1, 1, 16, 1, 1, 12, 1, 1, 12, 1, 1, 12, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 8, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 4, 1, 1, 4, 1, 1, 2, 1, 1, 16, 4, 4, 16, 5, 4 };
 
         public ulong GUID { get; private set; } // 8
         public DataDescriptor NameDesc { get; private set; } // 8
@@ -180,7 +106,7 @@ namespace bezdna_proto.Apex.FileTypes
 
             StartSeekStarpak = StarPakMandatoryMipMapsCount == 0 ? 0 : file.StarpakOffset;
             StartSeekStarpakOptional = StarpakOptionalMipMaps == 0 ? 0 : file.StarpakOffsetOptional;
-            Algorithm = _Compression[TextureType];
+            Algorithm = Titanfall2.FileTypes.Texture.Compression[TextureType];
             if (Algorithm == "UNKNOWN")
                 Console.WriteLine($"!!! {TextureType} ISNT PROGRAMMED IN !!!");
 
@@ -191,16 +117,50 @@ namespace bezdna_proto.Apex.FileTypes
             var offStar = (long)StartSeekStarpak;
             offStar -= StarpakNum;
             var offStarOpt = (long)StartSeekStarpakOptional;
-            var lobyte_ = _textureTypeSteps[TextureType] & 0xFF;
-            var hibyte_ = _textureTypeSteps[TextureType] >> 8;
+            //var lobyte_ = _textureTypeSteps[TextureType] & 0xFF;
+            //var hibyte_ = _textureTypeSteps[TextureType] >> 8;
 
-            // ACCURATE ONLY FOR Unk14 = 0
+            var unk1e = Unk1e & 0xFF;
+            //if (unk1e != 0)
+            //    throw new Exception("What?");
+
             var v10 = MipMaps;
+            var v20 = TextureType * 3;
             for (int i = MipMaps - 1; i >= 0; i--) 
             {
                 v10 -= 1;
 
-                var v16 = 1;
+                textureDatas[i].streaming = i < StarpakTotalCount;
+                textureDatas[i].optional = i < StarpakOptionalMipMaps;
+
+                var v15 = _textureTypeShit[v20];
+                var v14 = _textureTypeShit[v20 + 1];
+                var v16 = _textureTypeShit[v20 + 2];
+
+                var v17 = 1;
+                if ((Width >> v10) > 1)
+                    v17 = Width >> v10;
+                var v22 = 1;
+                if ((Height >> v10) > 1)
+                    v22 = Height >> v10;
+
+                var v21 = (v14 + v17 - 1) / v14;
+                var v23 = v21 * ((v16 + v22 - 1) / v16);
+                var v25 = v15 * v23;
+
+                textureDatas[i].seek = textureDatas[i].optional ? offStarOpt : (textureDatas[i].streaming ? offStar : off);
+                textureDatas[i].width = v17;
+                textureDatas[i].height = v22;
+                textureDatas[i].size = v25;
+
+                if (textureDatas[i].optional)
+                    offStarOpt += (v25 + 15) & 0xFFFFFFF0;
+                else if (textureDatas[i].streaming)
+                    offStar += (v25 + 15) & 0xFFFFFFF0;
+                else
+                    off += (v25 + 15) & 0xFFFFFFF0;
+
+                /*var v16 = 1;
                 if ((Width >> v10) > 1)
                     v16 = Width >> v10;
                 var v17 = 1;
@@ -221,7 +181,7 @@ namespace bezdna_proto.Apex.FileTypes
                 if (textureDatas[i].streaming)
                     offStar += (v19 + 15) & 0xFFFFFFF0;
                 else
-                    off += (v19 + 15) & 0xFFFFFFF0;
+                    off += (v19 + 15) & 0xFFFFFFF0;*/
             }
 
             TextureDatas = textureDatas;

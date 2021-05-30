@@ -25,9 +25,15 @@ namespace bezdna_proto
                 r2(fstream);
             } else if(version == 8)
             {
-                var Header = new Apex.RPakHeader(fstream);
-                var k0k = Utils.Decompress(fstream, Header.SizeDecompressed, Utils.HEADER_SIZE8);
-                File.WriteAllBytes(args[0] + ".raw", k0k);
+                if (!File.Exists(args[0] + ".raw"))
+                {
+                    var Header = new Apex.RPakHeader(fstream);
+                    if (Header.Compressed)
+                    {
+                        var k0k = Utils.Decompress(fstream, Header.SizeDecompressed, Utils.HEADER_SIZE8);
+                        File.WriteAllBytes(args[0] + ".raw", k0k);
+                    }
+                }
                 apex(fstream);
             } else
             {
@@ -71,7 +77,7 @@ namespace bezdna_proto
                     if (texture.GUID != file.GUID)
                         Console.WriteLine($"\t{file.GUID} != {texture.GUID}");
 
-                    Console.WriteLine($"\t Type: {texture.TextureType} | MipMaps: {texture.MipMaps} | StarPakMipMaps: {texture.StarpakTotalCount} | StarPakMandat: {texture.StarPakMandatoryMipMapsCount} | StarPakOpt: {texture.StarpakOptionalMipMaps} | RPakMipMapsCnt: {texture.RPakMipMapsCount} | Compression '{texture.Algorithm}' | StarpakNum {texture.StarpakNum}");
+                    Console.WriteLine($"\t Type: {texture.TextureType} | Total size: {texture.Unk18.ToString("X")} | MipMaps: {texture.MipMaps} | StarPakMipMaps: {texture.StarpakTotalCount} | StarPakMandat: {texture.StarPakMandatoryMipMapsCount} | StarPakOpt: {texture.StarpakOptionalMipMaps} | RPakMipMapsCnt: {texture.RPakMipMapsCount} | Compression '{texture.Algorithm}' | StarpakNum {texture.StarpakNum}");
                     if (texture.TextureDatas != null)
                         foreach (var e in texture.TextureDatas)
                         {

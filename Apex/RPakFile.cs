@@ -24,7 +24,10 @@ namespace bezdna_proto.Apex
 
             if (Header.Compressed)
             {
-                reader = new BinaryReader(new MemoryStream(Utils.Decompress(file, Header.SizeDecompressed, Utils.HEADER_SIZE8)));
+                if (File.Exists(file.Name + ".raw"))
+                    reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(file.Name + ".raw")));
+                else
+                    reader = new BinaryReader(new MemoryStream(Utils.Decompress(file, Header.SizeDecompressed, Utils.HEADER_SIZE8)));
                 GC.Collect();
             }
             else

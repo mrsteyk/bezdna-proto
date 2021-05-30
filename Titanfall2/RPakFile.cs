@@ -37,7 +37,10 @@ namespace bezdna_proto.Titanfall2
 
             if(Header.Compressed)
             {
-                reader = new BinaryReader(new MemoryStream(Utils.Decompress(file, Header.SizeDecompressed, Utils.HEADER_SIZE7)));
+                if (File.Exists(file.Name + ".raw"))
+                    reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(file.Name + ".raw")));
+                else
+                    reader = new BinaryReader(new MemoryStream(Utils.Decompress(file, Header.SizeDecompressed, Utils.HEADER_SIZE7)));
                 GC.Collect();
             } else
             {

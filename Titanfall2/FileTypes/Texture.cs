@@ -16,7 +16,7 @@ namespace bezdna_proto.Titanfall2.FileTypes
             BC5U = 8,
         }*/
         // Ебал я этих даунов из РСПН, сука, кто так делает блять ЪуЪ
-        private static readonly string[] _Compression = {
+        public static readonly string[] Compression = {
             "DXT1", // 0
             "DXT1", // 1
             "UNKNOWN", // 2
@@ -27,10 +27,10 @@ namespace bezdna_proto.Titanfall2.FileTypes
             "UNKNOWN", // 7
             "BC5U", // 8
             "UNKNOWN", // 9
-            "BC6H", // 10
+            "BC6H", // 10 // DDS DX10?
             "UNKNOWN", // 11
             "UNKNOWN", // 12
-            "BC7U", // 13
+            "BC7U", // 13 // DDS DX10 0x62
             "UNKNOWN", // 14
             "UNKNOWN", // 15
             "UNKNOWN", // 16
@@ -61,7 +61,7 @@ namespace bezdna_proto.Titanfall2.FileTypes
             "UNKNOWN", // 41
             "UNKNOWN", // 42
             "UNKNOWN", // 43
-            "UNKNOWN", // 44
+            "UNKNOWN", // 44 // ??? no fourcc; DDPF_ALPHAPIXELS | DDPF_LUMINANCE
             "UNKNOWN", // 45
             "UNKNOWN", // 46
             "UNKNOWN", // 47
@@ -174,7 +174,7 @@ namespace bezdna_proto.Titanfall2.FileTypes
             StarpakNum = (int)file.StarpakOffset & 0xF;
 
             StartSeekStarpak = StarPakMipMaps == 0 ? 0 : file.StarpakOffset;
-            Algorithm = _Compression[TextureType];
+            Algorithm = Compression[TextureType];
             if (Algorithm == "UNKNOWN")
                 Console.WriteLine($"!!! {TextureType} ISNT PROGRAMMED IN !!!");
 
