@@ -178,6 +178,9 @@ namespace bezdna_proto.Titanfall2.FileTypes
             if (Algorithm == "UNKNOWN")
                 Console.WriteLine($"!!! {TextureType} ISNT PROGRAMMED IN !!!");
 
+            // Retard?
+            MipMaps += (byte)StarPakMipMaps;
+
             // --- RETARDED MIPMAP WALKER ---
             var textureDatas = new TextureData[MipMaps];
             var off = StartSeekRPak;

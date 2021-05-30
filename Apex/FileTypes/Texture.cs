@@ -90,8 +90,8 @@ namespace bezdna_proto.Apex.FileTypes
             if (StarpakOptionalMipMaps != 0 && file.StarpakOffsetOptional == ulong.MaxValue)
                 throw new Exception("UnkMipMaps != 0 && file.StarpakOffsetOptional == ulong.MaxValue");
 
-            if (StarpakTotalCount > MipMaps)
-                throw new Exception("StarpakTotalCount > MipMaps");
+            //if ((Unk1e & 0xFF) > 1)
+            //    throw new Exception("byte Unk1e > 1");
 
             var data = file.Data;
             //if (data.offset != 0)
@@ -107,6 +107,11 @@ namespace bezdna_proto.Apex.FileTypes
             if (Algorithm == "UNKNOWN")
                 Console.WriteLine($"!!! {TextureType} ISNT PROGRAMMED IN !!!");
 
+            // Retard?
+            MipMaps += (byte)StarpakTotalCount;
+            //MipMaps += 1;
+            long size = 0;
+
             // --- RETARDED MIPMAP WALKER ---
             var textureDatas = new TextureData[MipMaps];
             var off = StartSeekRPak;
@@ -116,14 +121,17 @@ namespace bezdna_proto.Apex.FileTypes
             var offStarOpt = (long)StartSeekStarpakOptional;
 
             var unk1e = Unk1e & 0xFF;
+            if (unk1e == 0)
+                unk1e = 1;
             //if (unk1e != 0)
             //    throw new Exception("What?");
 
-            var v10 = MipMaps;
+            //var v10 = MipMaps;
             var v20 = TextureType * 3;
             for (int i = MipMaps - 1; i >= 0; i--) 
             {
-                v10 -= 1;
+                //v10 -= 1;
+                var v10 = i;
 
                 textureDatas[i].streaming = i < StarpakTotalCount;
                 textureDatas[i].optional = i < StarpakOptionalMipMaps;
@@ -154,7 +162,16 @@ namespace bezdna_proto.Apex.FileTypes
                     offStar += (v25 + 15) & 0xFFFFFFF0;
                 else
                     off += (v25 + 15) & 0xFFFFFFF0;
+
+                //for(var j = 0; j<unk1e; j++)
+                if(i < StarpakOptionalMipMaps)
+                    size += unk1e * v25;
+                else
+                    size += unk1e * ((v25 + 15) & 0xFFFFFFF0);
             }
+
+            //if (size != Unk18)
+            //    throw new Exception("size != Unk18");
 
             TextureDatas = textureDatas;
         }

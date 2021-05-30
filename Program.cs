@@ -56,12 +56,12 @@ namespace bezdna_proto
                 Console.WriteLine($"{i}: {section.SectionType}({(Titanfall2.SectionDescriptor.ESectionType)((int)section.SectionType & 3)}) {section.SizeUnaligned.ToString("X").PadLeft(8, '0')} 0b{Convert.ToString(section.AlignByte, 2)}");
             }
 
-            Console.WriteLine("\nData Chunks:");
+            /*Console.WriteLine("\nData Chunks:");
             for (var i = 0; i < f.DataChunks.Length; i++)
             {
                 var chunk = f.DataChunks[i];
                 Console.WriteLine($"{i}: @{f.DataChunkSeeks[i].ToString("X").PadLeft(16, '0')} {f.SectionDescriptors[chunk.SectionID].SectionType} {chunk.Size.ToString("X")}");
-            }
+            }*/
 
             Console.WriteLine("\nFile list:");
             foreach (var file in f.FilesInternal)
