@@ -68,10 +68,7 @@ namespace bezdna_proto.Apex.FileTypes
             d.offset = rpak.reader.ReadUInt32(); // 0xC
             NameDesc = d;
 
-            var backup = rpak.reader.BaseStream.Position;
-            rpak.reader.BaseStream.Seek(rpak.DataChunkSeeks[d.id] + d.offset, System.IO.SeekOrigin.Begin);
-            Name = rpak.reader.ReadNTString();
-            rpak.reader.BaseStream.Position = backup;
+            Name = ""; // generally a safe assumption, never seen name desc not 0ui64...
 
             Width = rpak.reader.ReadUInt16(); // 0x10
             Height = rpak.reader.ReadUInt16(); // 0x12
@@ -117,8 +114,6 @@ namespace bezdna_proto.Apex.FileTypes
             var offStar = (long)StartSeekStarpak;
             offStar -= StarpakNum;
             var offStarOpt = (long)StartSeekStarpakOptional;
-            //var lobyte_ = _textureTypeSteps[TextureType] & 0xFF;
-            //var hibyte_ = _textureTypeSteps[TextureType] >> 8;
 
             var unk1e = Unk1e & 0xFF;
             //if (unk1e != 0)
@@ -159,29 +154,6 @@ namespace bezdna_proto.Apex.FileTypes
                     offStar += (v25 + 15) & 0xFFFFFFF0;
                 else
                     off += (v25 + 15) & 0xFFFFFFF0;
-
-                /*var v16 = 1;
-                if ((Width >> v10) > 1)
-                    v16 = Width >> v10;
-                var v17 = 1;
-                if ((Height >> v10) > 1)
-                    v17 = Height >> v10;
-
-                textureDatas[i].streaming = i < StarpakTotalCount;
-                textureDatas[i].optional = i < StarpakOptionalMipMaps;
-
-                var v19 = lobyte_ * ((v16 + hibyte_ - 1) >> (hibyte_ >> 1)) * ((v17 + hibyte_ - 1) >> (hibyte_ >> 1));
-                textureDatas[i].seek = textureDatas[i].optional ? offStarOpt : (textureDatas[i].streaming ? offStar : off);
-                textureDatas[i].width = v16;
-                textureDatas[i].height = v17;
-                textureDatas[i].size = v19;
-
-                if (textureDatas[i].optional)
-                    offStarOpt += (v19 + 15) & 0xFFFFFFF0;
-                if (textureDatas[i].streaming)
-                    offStar += (v19 + 15) & 0xFFFFFFF0;
-                else
-                    off += (v19 + 15) & 0xFFFFFFF0;*/
             }
 
             TextureDatas = textureDatas;
