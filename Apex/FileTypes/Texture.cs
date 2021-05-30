@@ -170,8 +170,8 @@ namespace bezdna_proto.Apex.FileTypes
                     size += unk1e * ((v25 + 15) & 0xFFFFFFF0);
             }
 
-            //if (size != Unk18)
-            //    throw new Exception("size != Unk18");
+            if (size != Unk18 && MipMaps != 1) // Textures with mipmaps of 1 usually don't match cuz 8 @ the end or something stupid like that...
+                throw new Exception("size != Unk18");
 
             TextureDatas = textureDatas;
         }
