@@ -10,9 +10,15 @@ using Wasmtime;
 
 namespace bezdna_proto
 {
-    class Utils
+    static class Utils
     {
         public const int HEADER_SIZE7 = 88;
+        public const int HEADER_SIZE8 = 0x80;
+
+        public static bool ValidRPakHeader(byte[] file)
+        {
+            return (file[0] == 'R') && (file[1] == 'P') && (file[2] == 'a') && (file[3] == 'k');
+        }
 
         public static int GetRPakVersion(byte[] file)
         {
@@ -20,6 +26,17 @@ namespace bezdna_proto
                 return 0;
 
             return file[5] + (file[6] << 8);
+        }
+
+        public static int GetRPakVersion(FileStream file)
+        {
+            if (file.Length < 88)
+                return 0;
+
+            file.Position = 4;
+            var b5 = file.ReadByte();
+
+            return b5 + (file.ReadByte() << 8);
         }
 
         public static ulong Hash(string toHash)

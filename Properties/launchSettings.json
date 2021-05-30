@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "bezdna-proto": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\SteamLibrary\\steamapps\\common\\Apex Legends\\paks\\Win64\\mp_rr_arena_phase_runner.rpak\""
+    }
+  }
+}

@@ -38,6 +38,7 @@ namespace bezdna_proto.Titanfall2
             if(Header.Compressed)
             {
                 reader = new BinaryReader(new MemoryStream(Utils.Decompress(file, Header.SizeDecompressed, Utils.HEADER_SIZE7)));
+                GC.Collect();
             } else
             {
                 reader = new BinaryReader(file);
