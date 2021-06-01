@@ -56,12 +56,12 @@ namespace bezdna_proto
                 Console.WriteLine($"{i}: {section.SectionType}({(Titanfall2.SectionDescriptor.ESectionType)((int)section.SectionType & 3)}) {section.SizeUnaligned.ToString("X").PadLeft(8, '0')} 0b{Convert.ToString(section.AlignByte, 2)}");
             }
 
-            /*Console.WriteLine("\nData Chunks:");
+            Console.WriteLine("\nData Chunks:");
             for (var i = 0; i < f.DataChunks.Length; i++)
             {
                 var chunk = f.DataChunks[i];
                 Console.WriteLine($"{i}: @{f.DataChunkSeeks[i].ToString("X").PadLeft(16, '0')} {f.SectionDescriptors[chunk.SectionID].SectionType} {chunk.Size.ToString("X")}");
-            }*/
+            }
 
             Console.WriteLine("\nFile list:");
             foreach (var file in f.FilesInternal)
@@ -73,7 +73,7 @@ namespace bezdna_proto
                 if (ext == "txtr")
                 {
                     var texture = new Apex.FileTypes.Texture(f, file);
-                    Console.WriteLine($"{texture.Name}.{guid.ToString("X").PadLeft(16, '0')}.txtr {texture.Width}x{texture.Height}");
+                    Console.WriteLine($"0x{guid.ToString("X").PadLeft(16, '0')}.txtr {texture.Width}x{texture.Height}");
                     if (texture.GUID != file.GUID)
                         Console.WriteLine($"\t{file.GUID} != {texture.GUID}");
 
@@ -83,6 +83,41 @@ namespace bezdna_proto
                         {
                             Console.WriteLine($"\t\t{e.seek.ToString("X").PadLeft(16, '0')} {e.width}x{e.height} - {e.size.ToString("X")} | {e.streaming} | {e.optional}");
                         }
+                } else if (ext == "matl") {
+                    var material = new Apex.FileTypes.Material(f, file);
+                    Console.WriteLine($"{material.Name}.{guid.ToString("X").PadLeft(16, '0')}.matl | {material.MaterialName}");
+                    if (material.GUID != file.GUID)
+                        Console.WriteLine($"\t{file.GUID} != {material.GUID}");
+
+                    var descOffset = f.DataChunkSeeks[file.Description.id] + file.Description.offset;
+                    Console.WriteLine($"\tDesc@{descOffset.ToString("X").PadLeft(16, '0')} size 0x{file.DescriptionSize.ToString("X")}");
+
+                    var dataOffset = f.DataChunkSeeks[file.Data.id] + file.Data.offset;
+                    Console.WriteLine($"\tData@{dataOffset.ToString("X").PadLeft(16, '0')} | 0x{file.StarpakOffset.ToString("X")} | 0x{file.StarpakOffsetOptional.ToString("X")}");
+
+                    // A lot of shit is weird lmfao
+                    if (material.MaterialName == "snow" || material.MaterialName == "lava_rock" || material.MaterialName == "grass" || material.MaterialName == "concrete")
+                    {
+                        Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird, don't trust below suffixes!");
+                    }
+                    if (material.TextureReferences.Length > Apex.FileTypes.Material.TextureRefName.Length
+                        || material.TextureReferences.Length == 2) // Some shit has only _col and _opa...
+                    {
+                        Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird IN THIS CONFIG ({material.TextureReferences.Length}), don't trust below suffixes!");
+                    }
+                    for (var i = 0; i < material.TextureReferences.Length; i++)
+                    {
+                        var e = material.TextureReferences[i];
+                        //var refName = i < Apex.FileTypes.Material.TextureRefName.Length ? Apex.FileTypes.Material.TextureRefName[i] : "UNK";
+                        string refName;
+                        if (material.MaterialName == "grass" && material.TextureReferences.Length == 10)
+                            refName = Apex.FileTypes.Material.TextureRefName[i / 2];
+                        else if (material.TextureReferences.Length % Apex.FileTypes.Material.TextureRefName.Length == 0)
+                            refName = Apex.FileTypes.Material.TextureRefName[i / (material.TextureReferences.Length / Apex.FileTypes.Material.TextureRefName.Length)];
+                        else
+                            refName = i < Apex.FileTypes.Material.TextureRefName.Length ? Apex.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
+                        Console.WriteLine($"\t\tRef: 0x{e.ToString("X")} | {refName}");
+                    }
                 } else
                 {
                     Console.WriteLine($"0x{guid.ToString("X").PadLeft(16, '0')}.{ext} {file.NamePad.ToString("X")}");
@@ -173,9 +208,36 @@ namespace bezdna_proto
                 else if (ext == "matl")
                 {
                     var material = new Titanfall2.FileTypes.Material(f, file);
-                    Console.WriteLine($"{material.Name}.{guid.ToString("X").PadLeft(16, '0')}.matl");
+                    Console.WriteLine($"{material.Name}.{guid.ToString("X").PadLeft(16, '0')}.matl | {material.MaterialName}");
                     if (material.GUID != file.GUID)
                         Console.WriteLine($"\t{file.GUID} != {material.GUID}");
+
+                    var descOffset = f.DataChunkSeeks[file.Description.id] + file.Description.offset;
+                    Console.WriteLine($"\tDesc@{descOffset.ToString("X").PadLeft(16, '0')} size 0x{file.DescriptionSize.ToString("X")}");
+
+                    var dataOffset = f.DataChunkSeeks[file.Data.id] + file.Data.offset;
+                    Console.WriteLine($"\tData@{dataOffset.ToString("X").PadLeft(16, '0')}");
+
+                    // Glass is weird lmfao
+                    if (material.MaterialName == "glass")
+                    {
+                        Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird(?), don't trust below suffixes!");
+                    }
+                    if(material.TextureReferences.Length > Titanfall2.FileTypes.Material.TextureRefName.Length)
+                    {
+                        Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird IN THIS CONFIG ({material.TextureReferences.Length}), don't trust below suffixes!");
+                    }
+                    for (var i = 0; i < material.TextureReferences.Length; i++)
+                    {
+                        var e = material.TextureReferences[i];
+                        //var refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
+                        var refName = "";
+                        if (material.TextureReferences.Length % Titanfall2.FileTypes.Material.TextureRefName.Length == 0)
+                            refName = Titanfall2.FileTypes.Material.TextureRefName[i % Titanfall2.FileTypes.Material.TextureRefName.Length];
+                        else
+                            refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
+                        Console.WriteLine($"\t\tRef: 0x{e.ToString("X")} | {refName}");
+                    }
                 }
                 else if (ext == "shdr")
                 {

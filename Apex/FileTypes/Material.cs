@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bezdna_proto.Titanfall2.FileTypes
+namespace bezdna_proto.Apex.FileTypes
 {
     class Material
     {
         // pad 0-8
         public ulong GUID { get; private set; }
         public DataDescriptor NameDesc { get; private set; }
-        public uint NameOffset { get; private set; }
 
-        // TODO ???-0xd0
+        // TODO ???-0xf0
 
         public string Name { get; private set; }
         public string MaterialName { get; private set; }
@@ -27,26 +26,12 @@ namespace bezdna_proto.Titanfall2.FileTypes
             "_nml",
             "_gls",
             "_spc",
-            "_ilm",
-            "UNK5",
-            "UNK6",
-            "UNK7",
-            "_bm", // ???
-            "UNK9",
-            "UNK10",
-            "_ao",
-            "_cav",
-            "_opa",
+            "_ao", // ???
+            "_cav", // Figure out wtf is cav and wtf is ao
         };
 
         public Material(RPakFile rpak, FileEntryInternal file)
         {
-            if (rpak.MinDataChunkID > file.Description.id)
-            {
-                Name = "OOB";
-                return;
-            }
-
             var description = file.Description;
             var descOff = rpak.DataChunkSeeks[description.id] + description.offset;
             rpak.reader.BaseStream.Seek(descOff, System.IO.SeekOrigin.Begin);
@@ -66,12 +51,6 @@ namespace bezdna_proto.Titanfall2.FileTypes
             d.offset = rpak.reader.ReadUInt32();
             NameDesc = d;
 
-            if (rpak.MinDataChunkID > d.id)
-            {
-                Name = "OOB2";
-                return;
-            }
-
             var backup = rpak.reader.BaseStream.Position;
             rpak.reader.BaseStream.Seek(rpak.DataChunkSeeks[d.id] + d.offset, System.IO.SeekOrigin.Begin);
             Name = rpak.reader.ReadNTString();
@@ -85,32 +64,23 @@ namespace bezdna_proto.Titanfall2.FileTypes
             MaterialName = rpak.reader.ReadNTString();
             rpak.reader.BaseStream.Position = backup;
 
-            rpak.reader.BaseStream.Position = descOff + 0x98; // 0x60 in Apex???
+            rpak.reader.BaseStream.Position = descOff + 0x60; // 0x98 in TF|2???
             d.id = rpak.reader.ReadUInt32();
             d.offset = rpak.reader.ReadUInt32();
             var wtfOff = rpak.DataChunkSeeks[d.id] + d.offset;
-            d.id = rpak.reader.ReadUInt32();
-            d.offset = rpak.reader.ReadUInt32();
-            var wtf2Off = rpak.DataChunkSeeks[d.id] + d.offset; // end
             rpak.reader.BaseStream.Position = wtfOff;
 
-            var refcnt = (wtf2Off - wtfOff) / 8;
-            TextureReferences = new ulong[refcnt];
-            for (var i = 0; i < refcnt; i++)
-                TextureReferences[i] = rpak.reader.ReadUInt64();
-            //var textureRefs = new List<ulong>();
-
-            /*var texture_guid = rpak.reader.ReadUInt64();
+            var textureRefs = new List<ulong>();
+            var texture_guid = rpak.reader.ReadUInt64();
             do
             {
                 textureRefs.Add(texture_guid);
                 texture_guid = rpak.reader.ReadUInt64();
             } while (texture_guid != 0);
 
-            TextureReferences = textureRefs.ToArray();*/
+            TextureReferences = textureRefs.ToArray();
 
-            // 0x90 - shader set GUID
-            // 0xC0 - flag bullshit
+            // 0x58 - shds
         }
     }
 }
