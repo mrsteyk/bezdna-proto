@@ -78,7 +78,7 @@ namespace bezdna_proto.Apex
             var unk6CSKipped = unk68SKipped + (16 * Header.Unk6C);
             // unk70 here
 
-            var unk70SKipped = unk6CSKipped + (16 * Header.Unk6C);
+            var unk70SKipped = unk6CSKipped + (24 * Header.Unk70);
             // unk74 here
 
             if (Header.Unk74 != 0)
@@ -105,7 +105,7 @@ namespace bezdna_proto.Apex
                 if (data.Size == 0)
                 {
                     //MinDataChunkID = i;
-                    break;
+                    //break;
                 }
 
                 dataChunkSeeks[i] = kekPos;
@@ -113,12 +113,12 @@ namespace bezdna_proto.Apex
                 if (minPos == kekPos)
                 {
                     //MinDataChunkID = i - 1;
-                    break;
+                    //break;
                 }
                 else if (minPos > kekPos)
                 {
                     //MinDataChunkID = i; // I'm retarded
-                    break;
+                    //break;
                 }
             }
 

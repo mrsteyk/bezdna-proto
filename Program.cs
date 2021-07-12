@@ -146,6 +146,10 @@ namespace bezdna_proto
                         Console.WriteLine($"\t\t{arg.type} | RO: {arg.ro} | Off: {arg.off} | {arg.unk} | PartHash: {arg.hash16_shr4}");
                     }
                 }
+                else if(ext == "\0\0\0\0")
+                {
+                    Console.WriteLine($"0x{guid.ToString("X").PadLeft(16, '0')}.BROKEN {file.NamePad.ToString("X")}");
+                }
                 else
                 {
                     Console.WriteLine($"0x{guid.ToString("X").PadLeft(16, '0')}.{ext} {file.NamePad.ToString("X")}");
