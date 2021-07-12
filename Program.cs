@@ -83,7 +83,9 @@ namespace bezdna_proto
                         {
                             Console.WriteLine($"\t\t{e.seek.ToString("X").PadLeft(16, '0')} {e.width}x{e.height} - {e.size.ToString("X")} | {e.streaming} | {e.optional}");
                         }
-                } else if (ext == "matl") {
+                }
+                else if (ext == "matl")
+                {
                     var material = new Apex.FileTypes.Material(f, file);
                     Console.WriteLine($"{material.Name}.{guid.ToString("X").PadLeft(16, '0')}.matl | {material.MaterialName}");
                     if (material.GUID != file.GUID)
@@ -118,7 +120,33 @@ namespace bezdna_proto
                             refName = i < Apex.FileTypes.Material.TextureRefName.Length ? Apex.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
                         Console.WriteLine($"\t\tRef: 0x{e.ToString("X")} | {refName}");
                     }
-                } else
+                }
+                else if (ext == "ui\0\0") {
+                    var rui = new Apex.FileTypes.RUI(f, file);
+                    Console.WriteLine($"{rui.Name}.{guid.ToString("X").PadLeft(16, '0')}.ui");
+
+                    var descOffset = f.DataChunkSeeks[file.Description.id] + file.Description.offset;
+                    Console.WriteLine($"\tDesc@{descOffset.ToString("X").PadLeft(16, '0')} size 0x{file.DescriptionSize.ToString("X")}");
+
+                    var unk1Offset = f.DataChunkSeeks[rui.Unk1.id] + rui.Unk1.offset;
+                    Console.WriteLine($"\tUnk1@{unk1Offset.ToString("X").PadLeft(16, '0')}");
+
+                    var unk2Offset = f.DataChunkSeeks[rui.Unk2.id] + rui.Unk2.offset;
+                    Console.WriteLine($"\tUnk2@{unk2Offset.ToString("X").PadLeft(16, '0')}");
+
+                    Console.WriteLine($"\tArgClusters[{rui.ArgClusterCnt}]:");
+                    foreach(var cluster in rui.ArgClusters)
+                    {
+                        Console.WriteLine($"\t\tStart: {cluster.num_start} | Args: {cluster.num_arg} | Hash data: {cluster.hash_mul}|{cluster.hash_add}");
+                    }
+
+                    Console.WriteLine($"\tArgs[{rui.Args.Length}]:");
+                    foreach (var arg in rui.Args)
+                    {
+                        Console.WriteLine($"\t\t{arg.type} | RO: {arg.ro} | Off: {arg.off} | {arg.unk} | PartHash: {arg.hash16_shr4}");
+                    }
+                }
+                else
                 {
                     Console.WriteLine($"0x{guid.ToString("X").PadLeft(16, '0')}.{ext} {file.NamePad.ToString("X")}");
 
@@ -136,7 +164,7 @@ namespace bezdna_proto
                         if (file.StarpakOffset == ulong.MaxValue)
                         {
                             Console.Write($"\t\tNOT IN STARPAK EITHER!!!\n");
-                            if(file.StarpakOffsetOptional == ulong.MaxValue)
+                            if (file.StarpakOffsetOptional == ulong.MaxValue)
                             {
                                 Console.Write($"\t\tNOT IN STARPAK2? EITHER!!!\n");
                             }
@@ -223,20 +251,23 @@ namespace bezdna_proto
                     {
                         Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird(?), don't trust below suffixes!");
                     }
-                    if(material.TextureReferences.Length > Titanfall2.FileTypes.Material.TextureRefName.Length)
+                    if (material.TextureReferences != null)
                     {
-                        Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird IN THIS CONFIG ({material.TextureReferences.Length}), don't trust below suffixes!");
-                    }
-                    for (var i = 0; i < material.TextureReferences.Length; i++)
-                    {
-                        var e = material.TextureReferences[i];
-                        //var refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
-                        var refName = "";
-                        if (material.TextureReferences.Length % Titanfall2.FileTypes.Material.TextureRefName.Length == 0)
-                            refName = Titanfall2.FileTypes.Material.TextureRefName[i % Titanfall2.FileTypes.Material.TextureRefName.Length];
-                        else
-                            refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
-                        Console.WriteLine($"\t\tRef: 0x{e.ToString("X")} | {refName}");
+                        if (material.TextureReferences.Length > Titanfall2.FileTypes.Material.TextureRefName.Length)
+                        {
+                            Console.WriteLine($"\t\tMaterial {material.MaterialName} is weird IN THIS CONFIG ({material.TextureReferences.Length}), don't trust below suffixes!");
+                        }
+                        for (var i = 0; i < material.TextureReferences.Length; i++)
+                        {
+                            var e = material.TextureReferences[i];
+                            //var refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
+                            var refName = "";
+                            if (material.TextureReferences.Length % Titanfall2.FileTypes.Material.TextureRefName.Length == 0)
+                                refName = Titanfall2.FileTypes.Material.TextureRefName[i % Titanfall2.FileTypes.Material.TextureRefName.Length];
+                            else
+                                refName = i < Titanfall2.FileTypes.Material.TextureRefName.Length ? Titanfall2.FileTypes.Material.TextureRefName[i] : $"UNK{i}";
+                            Console.WriteLine($"\t\tRef: 0x{e.ToString("X")} | {refName}");
+                        }
                     }
                 }
                 else if (ext == "shdr")

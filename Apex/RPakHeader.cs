@@ -75,8 +75,8 @@ namespace bezdna_proto.Apex
                 throw new Exception("Invalid version!");
             Flags = reader.ReadUInt16(); // 6-8
 
-            if (ShouldLLA)
-                throw new Exception("ShouldLLA");
+            //if (ShouldLLA)
+            //    throw new Exception("ShouldLLA");
 
             RPakType = reader.ReadUInt64();
             Unk10 = reader.ReadUInt64();
